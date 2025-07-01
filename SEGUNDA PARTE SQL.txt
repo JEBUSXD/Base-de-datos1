@@ -1,0 +1,471 @@
+CONSULTAS  DE UNA TABLA:
+
+- Mostrar todas las tuplas de cliente:
+
+SELECT * FROM cliente
+
+ 
+
+- Otra forma de mostrar todas las tuplas 
+
+SELECT cliente.clici, cliente.clinombre, cliente.clidireccion,cliente.clisexo, cliente.clilimitec
+FROM cliente ;
+
+ 
+- Renombrar y mostrar (cliente se renombra por  c)
+
+SELECT c.clici, c.clinombre, c.clidireccion,c.clisexo, c.clilimitec
+FROM cliente c;
+ 
+
+
+-Listar de menor a mayor de la tabla cliente por el codigo (ASCENDENTE) 
+
+SELECT *  FROM cliente ORDER BY clici;      
+
+ 
+
+-Listar de menor a mayor de la tabla cliente por el limite de credito (ASCENDENTE) 
+
+SELECT *  FROM cliente ORDER BY clilimitec;      
+
+ 
+
+
+-Listar de menor a mayor de la tabla cliente por el nombre (ASCENDENTE) 
+
+SELECT *  FROM cliente ORDER BY clinombre;      
+ 
+
+-Listar de menor a mayor de la tabla cliente por el nombre (ASCENDENTE) y mostrar sólo el ci y nombre:
+
+SELECT clici,clinombre  
+FROM cliente 
+ORDER BY clinombre;      
+ 
+
+-Listar de mayor a menor (DESCENDENTE)
+
+SELECT *  FROM cliente ORDER BY clici DESC;      
+ 
+
+-Listar de mayor  a menor de la tabla cliente por el nombre (DESCENDENTE) y mostrar sólo el ci y nombre:
+
+SELECT clici,clinombre  
+FROM cliente 
+ORDER BY clinombre DESC;      
+
+ 
+
+-Listar una tupla específica del cliente donde su código es 111 y se quiere mostrar solo su código, nombre y sexo:
+
+SELECT clici, clinombre, clisexo
+FROM cliente
+WHERE clici=111
+ 
+
+-Borrar una tupla a la tabla cliente, luego volverla a insertar:
+DELETE FROM cliente 
+WHERE clici=444;
+ 
+
+Si revisamos en la tabla la tupla ya no existe:
+
+
+Luego la volvemos a insertar:
+
+INSERT INTO cliente VALUES (444, 'Ana Cosio', 'Calle Peru', 'F',3000 );
+
+-Listar tuplas especificas de cliente usando condiciones >,<;<=;>=
+
+SELECT * FROM cliente
+WHERE clici >250
+
+ 
+
+-Listar todos los clientes que son de sexo Femenino:
+
+SELECT * FROM cliente
+WHERE clisexo =  'F '  
+
+ 
+
+-Listar todos los clientes que son de sexo Masculino y tienen un limite de credito superior a 1000:
+
+SELECT * FROM cliente
+WHERE clisexo =  'M '  and  clilimitec > 1000;
+ 
+
+-Listar todos los productos que comienzan con ‘C’
+
+SELECT * FROM producto
+WHERE prodescripcion LIKE 'C%'
+
+ 
+
+
+
+- Listar todos los productos que contiene el carácter ‘a’
+
+SELECT * FROM producto 
+WHERE prodescripcion LIKE '%a%'
+
+
+
+
+ 
+
+- Listar todos los clientes que viven en avenidas 
+
+SELECT * FROM cliente 
+WHERE clidireccion LIKE '%Avenida%'
+
+ 
+
+- Listar todos los clientes que se llaman ‘Juan’
+
+SELECT * FROM cliente
+WHERE clinombre LIKE '%Juan%'
+ 
+
+Nota: Cuando se desea especificar palabras que solo contengan ciertos caracteres se puede adicionar un espacio, ejemplo si se quisiera listar productos que son ace y no aceite se deberá colocar luego de la palabra ace  un espacio ya que si no se deja el espacio busca todas las palabras que contengan ‘ace’ incluyendo como resultado aceite, ace, etc
+
+ 
+
+- Calcular el número total de clientes
+
+SELECT COUNT(*) AS totalcliente 
+FROM cliente
+
+
+
+
+
+CONSULTAS  DE (2) DOS TABLAS:
+
+Considerando los siguientes datos:
+
+Tabla producto:						Tabla unidadmedida:
+ 
+
+- Mostrar el código, nombre y la unidad de medida del producto:
+
+SELECT procodigo, prodescripcion,uniddescripcion
+FROM producto, unidadmedida 
+WHERE producto.uniid=unidadmedida.uniid;
+
+ 
+
+
+- Mostrar el código, nombre y la unidad de medida del producto, del producto de código 1003:
+SELECT procodigo, prodescripcion,uniddescripcion
+FROM producto, unidadmedida 
+WHERE producto.procodigo=1003 
+and producto.uniid=unidadmedida.uniid;
+
+
+
+- Mostrar el código y descripción de los productos que usan como unidad de medida la unidad ‘ mts’:
+
+SELECT procodigo, prodescripcion
+FROM producto, unidadmedida
+WHERE producto.uniid=unidadmedida.uniid
+AND unidadmedida.uniabrev='mts'
+
+Otra forma es usando el operador IN:
+
+SELECT procodigo,prodescripcion
+FROM producto
+WHERE uniid IN (SELECT uniid FROM unidadmedida
+                              WHERE uniabrev='mts' )
+
+
+
+- Mostrar el código y descripción de los productos que usan como unidad de medida la unidad ‘ und’:
+
+SELECT procodigo,prodescripcion
+FROM producto,unidadmedida
+WHERE producto.uniid=unidadmedida.uniid
+AND unidadmedida.uniabrev='und'
+
+
+
+
+Otra forma es usando el operador IN:
+
+SELECT procodigo,prodescripcion
+FROM producto
+WHERE uniid IN (SELECT uniid FROM unidadmedida
+                              WHERE uniabrev='und' )
+
+
+
+
+
+CONSULTAS PARA 3 TABLAS     (1º CASO)
+
+Usando las siguientes tablas realizar las consultas:
+
+notaventa						        cliente
+
+
+vendedor
+
+
+- Mostrar el numero de la venta, fecha de venta, ci del cliente nombre del cliente y nombre del vendedor:
+
+SELECT n.vennumero,n.venfecha, n.clici, c.clinombre, v.vndnombre
+FROM notaventa n, cliente c, vendedor v
+WHERE n.clici=c.clici  and  n.vndcodigo= v.vndcodigo
+
+
+ 
+
+- Mostrar el numero de la venta 3, fecha de venta, ci del cliente nombre del cliente, código y nombre del vendedor:
+
+SELECT n.vennumero,n.venfecha, n.clici, c.clinombre, v.vndcodigo, v.vndnombre
+FROM notaventa n, cliente c, vendedor v
+WHERE  n.vennumero=3
+AND  n.clici=c.clici  and  n.vndcodigo= v.vndcodigo
+
+ 
+
+
+CONSULTAS PARA 3  TABLAS     (2º CASO)
+
+Usando las siguientes tablas realizar las consultas:
+
+notaventa                                                     			producto
+ 
+
+detalleventa
+ 
+
+- Mostrar el código y nombre de los productos que corresponden a la venta cuyo monto es =240
+
+SELECT p.procodigo, p.prodescripcion
+FROM notaventa n, producto p, detalleventa d
+WHERE d.vennumero=n.vennumero
+AND d.procodigo=p.procodigo
+AND n.venmonto=240
+
+ 
+
+- Mostrar el código, nombre de los productos, que corresponden a las ventas de fecha = '20/08/2014 '
+
+SELECT p.procodigo, p.prodescripcion, n.venfecha
+FROM producto p, detalleventa d, notaventa n
+WHERE d.vennumero=n.vennumero
+AND d.procodigo =p.procodigo
+AND n.venfecha = '20/08/2014 '
+
+
+
+
+CONSULTAS PARA 4  TABLAS    
+
+Cliente
+notaventa 
+producto
+Detalleventa
+                                                                                      cliente
+
+- Mostrar el nombre de los productos que ha comprado el cliente “Luis Casas”
+
+SELECT cliente.clici,cliente.clinombre,producto.procodigo,producto.prodescripcion
+FROM cliente, notaventa,producto,detalleventa
+WHERE detalleventa.procodigo=producto.procodigo
+AND detalleventa.vennumero=notaventa.vennumero
+AND notaventa.clici=cliente.clici
+AND cliente.clinombre='Luis Casas '
+
+
+
+Para que no repita el nombre del cliente solo quitamos cliente.clici y cliente.clinombre:
+
+SELECT producto.procodigo,producto.prodescripcion
+FROM cliente, notaventa,producto,detalleventa
+WHERE detalleventa.procodigo=producto.procodigo
+AND detalleventa.vennumero=notaventa.vennumero
+AND notaventa.clici=cliente.clici
+AND cliente.clinombre='Luis Casas '
+
+
+
+
+
+HERENCIA  DE  CLASES
+
+	CASO  1:  SOLAPAMIENTO  O SOBREPUESTA
+Considerando las siguientes  clases:
+
+ 
+La creación de sus tablas con SQL serán:
+
+CREATE TABLE persona(
+   ci int PRIMARY KEY,
+   nombre char(50) NOT NULL,
+   direccion char(50)  NOT NULL,
+   sexo char(1) NOT NULL,
+   telefono int,
+   limitecredito int, 
+   comision float,
+   tipoc int,
+   tipov int
+)
+
+
+
+CI	NOMBRE	DIRECCION	SEXO	TELEFONO	LIMITECREDITO	COMISION	TIPOC	TIPOV
+111	Juan Perez	Av. Bolivar	M	78933331	1000	25	1	0
+222	Luisa Marquez	Av. Brasil	F	 	200	 	1	0
+333	Rocio Castrillo	C. Taperas	F	72155559	 	100	0	1
+444	Fatima Casa	Av. Bolivar	F	39522332	1000	 	1	1
+555	Miguel Fernandez	C. Bustamante	M	32144789	1500	150	0	1
+La inserción de los datos:
+
+INSERT INTO persona VALUES (111,'Juan Perez','Av. Bolivar','M',78933331,1000,25,1,0);
+INSERT INTO persona VALUES (222,'Luisa Marquez','Av. Brasil','F',null,200,null,1,0);
+INSERT INTO persona VALUES (333,'Rocio Castrillo','C. Taperas','F',72155559,null,100,0,1);
+INSERT INTO persona VALUES (444,'Fatima Casa','Av. Bolivar','F',39522332,1000,null,1,1);
+INSERT INTO persona VALUES (555,'Miguel Fernandez','C. Bustamante','M',32144789,1500,150,0,1);
+
+Las Consultas pueden ser:
+
+-  Mostrar ci, nombre y dirección de todas las personas que viven sobre  alguna avenida y son de sexo = 'F'
+
+SELECT  ci, nombre, direccion
+FROM persona
+WHERE direccion LIKE  'Av%'
+AND sexo= 'F'  
+
+-  Mostrar ci, nombre y sexo de todas las personas que son de ambos tipos de persona clientes y vendedor: 
+
+SELECT ci,nombre,sexo
+FROM  persona
+WHERE tipoc = tipov
+
+
+
+-  Mostrar ci, nombre y sexo de todas las personas que son de diferentes tipos de persona clientes y vendedor: 
+
+SELECT ci,nombre,sexo
+FROM  persona
+WHERE tipoc <> tipov
+
+
+
+-  Mostrar ci, nombre y sexo de todas las personas que son de tipoc es decir cliente: 
+
+SELECT ci,nombre,sexo
+FROM  persona 
+WHERE tipoc =1
+
+
+
+
+	CASO  2:  DISJUNTA
+
+CREATE TABLE vehiculo (
+   placa char(8) PRIMARY KEY,
+   marca char(20) NOT NULL,
+   modelo char(20) NOT NULL,
+  anio integer NOT NULL,
+   tipo char(1) NOT NULL
+);
+
+CREATE TABLE camion(
+   placa char(8),
+   nroejes int NOT NULL,
+   capacidad int NOT NULL,
+   PRIMARY KEY (placa),
+   FOREIGN KEY (placa) REFERENCES   vehiculo(placa)
+   ON DELETE CASCADE
+   ON UPDATE CASCADE
+);
+
+CREATE TABLE auto(
+   placa char(8),
+   nropasajeros int NOT NULL, 
+   PRIMARY KEY (placa),
+   FOREIGN KEY (placa) REFERENCES vehiculo(placa)
+   ON DELETE CASCADE
+   ON UPDATE CASCADE
+
+);
+
+
+
+La inserción de los datos:
+
+INSERT INTO vehiculo VALUES ('AAA-111','K2','VOLVO',2001,'C');
+INSERT INTO vehiculo VALUES ('BBB-222','COROLLA','TOYOTA',2010,'A');
+INSERT INTO vehiculo VALUES ('CCC-333','K2','VOLVO',2002,'C');
+INSERT INTO vehiculo VALUES ('DDD-444','COROLLA','TOYOTA',2012,'A');
+INSERT INTO vehiculo VALUES ('EEE-555','J2','VOLVO',2014,'C');
+
+INSERT INTO camion VALUES ('AAA-111',2,2);
+INSERT INTO camion VALUES ('CCC-333',3,4);
+INSERT INTO camion VALUES ('EEE-555',2,3);
+
+INSERT INTO auto VALUES ('BBB-222',5);
+INSERT INTO auto VALUES ('DDD-444',4);
+
+
+
+-  Mostrar la placa, modelo y tipo de todos los camiones
+
+SELECT vehiculo.placa, vehiculo.modelo, vehiculo.tipo
+FROM vehiculo, camion
+WHERE camion.placa=vehiculo.placa
+
+
+
+-  Mostrar las placas, modelos y años de todos los camiones que tiene una capacidad de 2 toneladas.
+ 
+SELECT  vehiculo.placa,vehiculo.modelo, vehiculo.anio
+FROM vehiculo, camion
+WHERE vehiculo.placa=camion.placa
+AND camion.capacidad= 2
+
+
+
+CONSULTAS CON COUNT, SUM, MAX,MINAVG:
+
+Usando la tabla NOTAVENTA:
+
+
+-  Contar la cantidad de ventas:
+
+SELECT  COUNT (*) as cantidad
+FROM notaventa
+
+
+
+-   Sumar el total de ventas :
+
+SELECT SUM (venmonto) as suma
+FROM notaventa 
+
+
+
+-   Mostrar la venta maxima :
+
+SELECT MAX (venmonto) as suma
+FROM notaventa
+
+
+
+-   Mostrar la venta minima :
+
+SELECT MIN (venmonto) as suma
+FROM notaventa
+
+
+
+-   Mostrar el promedio de ventas :
+
+SELECT AVG (venmonto) as suma
+FROM notaventa
+
+

@@ -1,0 +1,199 @@
+- Creando la Base de Datos:
+
+CREATE  DATABASE almacen2018;
+
+- Para el Borrado de la Base de Datos:
+
+DROP DATABASE almacen2018;
+
+-Creando las Tablas de la Base de Datos:
+
+create table cliente(
+  clici integer PRIMARY KEY,
+  clinombre char(30) not null,
+  clidireccion char(30) not null,
+  clisexo char(1) not null,
+  clilimitec integer 
+  );
+
+create table vendedor(
+  vndcodigo integer PRIMARY KEY,
+  vndnombre char(30) not null,
+  vndcomision integer not null,
+  vndsexo char(1) not null   
+);
+
+
+create table notaventa(
+  vennumero integer PRIMARY KEY,
+  venfecha date not null,
+  venmonto integer not null,
+  clici integer not null,
+  vndcodigo integer not null,
+  FOREIGN KEY (clici) references cliente(clici),
+  FOREIGN KEY (vndcodigo) references vendedor(vndcodigo)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+);
+
+create table unidadmedida(
+  uniid integer PRIMARY KEY,
+  unidescripcion char(50) not null,
+  uniabrev char(3) not null
+);
+
+create table producto(
+  procodigo integer PRIMARY KEY,
+  prodescripcion char(50) not null,
+  proprecio integer,
+  uniid integer not null,
+  FOREIGN KEY (uniid) references unidadmedida(uniid)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE      
+);
+
+create table detalleventa(
+  vennumero integer not null,
+  procodigo integer not null,
+  detcantidad integer not null,
+  detprecio integer not null,
+  PRIMARY KEY (vennumero,procodigo),
+  FOREIGN KEY (vennumero) references notaventa(vennumero),
+  FOREIGN KEY (procodigo) references producto(procodigo)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE   
+);
+
+/***********************************************************/
+TABLAS DE PRUEBA:
+
+create table cliente2(
+  clici integer PRIMARY KEY,
+  clinombre char(30) not null,
+  clidireccion char(30) not null,
+  clisexo char(1) not null,
+  clilimitec integer   
+);
+
+create table cliente3(
+  clici integer PRIMARY KEY,
+  clinombre char(30) not null,
+  clidireccion char(30) not null,
+  clisexo char(1) not null,
+  clilimitec integer   
+);
+
+create table producto2(
+  procodigo SERIAL  PRIMARY KEY,  
+  prodescripcion char(50) not null,
+  proprecio integer,
+  uniid integer not null,
+  FOREIGN KEY (uniid) references unidadmedida(uniid)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE      
+);
+
+--  SERIAL  este tipo de dato permite autoincrementar
+
+create table detalleventa2(
+  vennumero integer not null,
+  procodigo integer not null,
+  detcantidad integer not null,
+  detprecio integer not null,
+  PRIMARY KEY (vennumero,procodigo),
+  FOREIGN KEY (vennumero) references notaventa(vennumero),
+  FOREIGN KEY (procodigo) references producto(procodigo)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE    
+);
+
+
+5.	Realizar Consultas
+
+BORRAR
+
+DROP TABLE cliente2;          //Borra toda la tabla
+
+DELETE from cliente3;           //Borra todos los datos de la tabla
+
+/*******************************************clase grabada 2*/
+
+OPERACIONESSOBREATRIBUTOS
+
+- Para adicionar una columna o atributo:
+
+ALTER TABLE cliente ADD COLUMN estado CHAR(30);
+
+- Para renombrar una columna:
+
+ALTER TABLE cliente RENAME COLUMN estado TO cliestado;
+
+- Para eliminar una columna:
+
+ALTER TABLE cliente DROP COLUMN cliestado;   
+
+
+INSERTAR TUPLAS
+
+En la tabla cliente:
+
+INSERT INTO cliente VALUES (111, 'Juan Perez', 'Avenida Bolivar', 'M', 2000);
+INSERT INTO cliente VALUES (222, 'Rosa  Mendez','Calle Camacho', 'F', 500);
+INSERT INTO cliente VALUES (333, 'Luis Casas', 'Avenida Bolivar', 'M',200 );
+INSERT INTO cliente VALUES (444, 'Ana Cosio', 'Calle Peru', 'F',3000 );
+
+ 
+En la tabla Vendedor:
+
+INSERT INTO vendedor VALUES(7777,'Pedro Romero',300,'M');
+INSERT INTO vendedor VALUES(8888,'Carlos Perez',20,'M');
+INSERT INTO vendedor VALUES(3333,'Luis Casas',10,'M');
+INSERT INTO vendedor VALUES(9999,'Maria Torrez',200,'F');
+INSERT INTO vendedor VALUES(5555,'Fatima  Lopez',150,'F');
+
+
+En la table unidadmedida:
+
+INSERT INTO unidadmedida VALUES(200,'metros', 'mts');
+INSERT INTO unidadmedida VALUES(201,'unidad', 'und');
+INSERT INTO unidadmedida VALUES(202,'paquete', 'paq');
+
+ 
+
+
+
+En la tabla notaventa:
+
+INSERT INTO notaventa VALUES(1,'01/02/2014',50,111,8888);
+INSERT INTO notaventa VALUES(2,'01/02/2014',60,333,7777);
+INSERT INTO notaventa VALUES(3,'03/03/2014',700,111,9999);
+INSERT INTO notaventa VALUES(4,'20/08/2014',240,111,8888);
+INSERT INTO notaventa VALUES(5,'20/08/2014',1000,111,3333);
+
+
+ 
+
+En la tabla producto:
+
+INSERT INTO producto VALUES(1000,'Teclado',90,201);
+INSERT INTO producto VALUES(1001,'Mouse',50,201);
+INSERT INTO producto VALUES(1002,'Cable UTP Cat-5',5,200);
+INSERT INTO producto VALUES(1003,'Case',150,201);
+INSERT INTO producto VALUES(1004,'Monitor',800,201);
+
+ 
+
+
+En la tabla detalleventa:
+
+INSERT INTO detalleventa VALUES(1,1001,1,50);
+INSERT INTO detalleventa VALUES(2,1001,1,50);
+INSERT INTO detalleventa VALUES(2,1002,2,5);
+INSERT INTO detalleventa VALUES(3,1004,1,700);
+INSERT INTO detalleventa VALUES(4,1000,1,90);
+INSERT INTO detalleventa VALUES(4,1003,1,150);
+INSERT INTO detalleventa VALUES(5,1000,1,90);
+
+ 
+
+
