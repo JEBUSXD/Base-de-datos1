@@ -80,7 +80,7 @@ INSERT INTO detalleventa VALUES(4,1003,1,150);
 INSERT INTO detalleventa VALUES(5,1000,1,90);
 select * from detalleventa 
 
-
+select * from cliente
 /******************************segundo archivo******************************/
 -- Otra forma de mostrar todas las tuplas (selecsiona ambas lineas)
 SELECT cliente.clici, cliente.clinombre, cliente.clidireccion,cliente.clisexo, cliente.clilimitec
@@ -93,8 +93,13 @@ select * from cliente
 SELECT *  FROM cliente ORDER BY clici;  --lo ordena de forma ascendente
 SELECT clici,clinombre  FROM cliente ORDER BY clinombre DESC;--descendente
 
---Listar una tupla específica del cliente donde su código es 111 y se quiere mostrar solo su código, nombre y sexo:
-SELECT clici, clinombre, clisexo FROM cliente WHERE clici=111
+--motrar tupla en especifico
+SELECT * FROM cliente WHERE clici=111
+--cliente donde su código es 111, mostrar partes  especifica de tupla
+SELECT clici, clinombre, clisexo 
+FROM cliente 
+WHERE clici=111
+
 --Borrar una tupla a la tabla cliente:
 DELETE FROM cliente WHERE clici=444;
 --Listar tuplas especificas de cliente usando condiciones >,<;<=;>=
@@ -103,13 +108,76 @@ SELECT * FROM cliente WHERE clici >250 --(solo se mostrara las tuplas mayores a 
 SELECT * FROM cliente WHERE clisexo =  'F '
 --Listar todos los clientes que son de sexo Masculino y tienen un limite de credito superior a 1000:
 SELECT * FROM cliente WHERE clisexo =  'M '  and  clilimitec > 1000;
+
 --Listar todos los productos que comienzan con ‘C’
 SELECT * FROM producto WHERE prodescripcion LIKE 'C%'
---Listar todos los productos que contiene el carácter ‘a’
+--mostrara todas las tuplas que contengan el caractere de "a"
 SELECT * FROM producto WHERE prodescripcion LIKE '%a%'
--- Calcular el número total de clientes
+--se mostrara todas las tuplas que contengan la palabra avenida
+SELECT * FROM cliente 
+WHERE clidireccion LIKE '%Avenida%'
+
+-- Calcular el número total de clientes(totalcliente es una variable)
 SELECT COUNT(*) AS totalcliente FROM cliente
 --Mostrar el código, nombre y la unidad de medida del producto:
 SELECT procodigo, prodescripcion,unidescripcion
 FROM producto, unidadmedida 
 WHERE producto.uniid=unidadmedida.uniid;
+/****************************consulta entre dos tablas**************************/
+
+
+
+
+
+--preguntas examen con el auxiliar
+--1)mostrar el nombre del producto ,nombre de unaidad de medida, y el producto de la unidad de ID 1000
+select p.prodescripcion, um.unidescripcion
+FROM producto p, unidadmedida um
+WHERE p.procodigo=1000
+and p.uniid=um.uniid
+
+--2)mostrar el numero de ventas, el name del cliente y monto total del cliente que gasto mas de 600
+select nv.vennumero , c.clinombre,nv.venmonto
+FROM notaventa nv,cliente c
+where nv.clici=c.clici
+and nv.venmonto >'600';
+
+--3)mostrar el name la cliente y vendedor de la fecha 3 marzo(3) 2014(tambien mostrar)
+SELECT c.clinombre,v.vndnombre, nv.venfecha
+from cliente c,vendedor v,notaventa nv
+where nv.venfecha='2014-03-03'
+and nv.clici=c.clici
+and nv.vndcodigo=v.vndcodigo;
+--4)mostrar el name del cliente, el prducto que compro, la cantidad y el nombre del vendedor
+select c.clinombre, p.prodescripcion, dv.detcantidad,v.vndnombre 
+from cliente c,detalleventa dv, producto p,vendedor v, notaventa nv
+where dv.procodigo=p.procodigo
+and dv.vennumero=nv.vennumero;
+--5-fotos)mostrar el nombre del vendedor y el numero de venta que atendio
+select v.vndnombre,nv.vennumero
+from vendedor v,notaventa nv
+where v.vndcodigo=nv.vndcodigo
+--6)mostrar el nombre de cada producto y su unidad de medida, pero solo si el nombre 
+--del productocomieza con "c"
+select p.prodescripcion, u.unidescripcion
+from producto p, unidadmedida u
+where u.uniid=p.uniid
+and p.prodescripcion like 'C%';
+--7)mostrar el nombre del cliente, el numero de nota de venta y el nombre del 
+--vendedor, pero solo si el cliente es de sexo masculino
+select c.clinombre, nv.vennumero, v.vndnombre
+from cliente c, notaventa nv,vendedor v
+where v.vndcodigo=nv.vndcodigo
+and c.clici=nv.clici
+and c.clisexo='M';
+--8)Mostrar el nombre del cliente y la cantidad total de productos que han comprado
+SELECT c.clinombre, SUM(dv.detcantidad) AS total_productos
+FROM cliente c, notaventa nv, detalleventa dv, producto p
+WHERE c.clici = nv.clici
+  AND nv.vennumero = dv.vennumero
+  AND dv.procodigo = p.procodigo
+GROUP BY c.clinombre
+--)por si pide crear una tabla abc y hacerle un backup
+
+
+
