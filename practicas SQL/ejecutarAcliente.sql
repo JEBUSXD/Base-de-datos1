@@ -179,5 +179,62 @@ WHERE c.clici = nv.clici
 GROUP BY c.clinombre
 --)por si pide crear una tabla abc y hacerle un backup
 
-
+--)otra clase antes del examen 
+--)1 nombre del cliente con sus notas registadas con su monto 
+SELECT c.clinombre, nv.vennumero, nv.venmonto 
+from cliente c, notaventa nv
+where c.clici=nv.clici;
+--2)notas de ventas con nombre del cliente y nombre del vendedor, numero de
+--venta y su monto
+SELECT nv.vennumero, c.clinombre, v.vndnombre, nv.venmonto
+from cliente c, notaventa nv, vendedor v
+where c.clici=nv.clici
+and v.vndcodigo=nv.vndcodigo;
+--3) detalle completo de ventas: cliente, producto, unidad de medida y cantidad
+SELECT c.clinombre, p.prodescripcion, u.unidescripcion, dv.detcantidad
+from notaventa nv, cliente c, producto p, unidadmedida u, detalleventa dv
+where u.uniid=p.uniid
+and dv.procodigo=p.procodigo
+and dv.vennumero=nv.vennumero
+and c.clici=nv.clici;
+--4)crear 2 tablas de muchos a muchos llamada estudiante y curso, para la tabla
+-- estudiantes
+create table ESTUDIANTE(
+  estudiante_ID integer PRIMARY KEY,
+  est_nombre char(50) not null  
+);
+--curso
+create table CURSO(
+  curso_ID integer PRIMARY KEY,
+  curso_nombre char(50) not null    
+);
+create table ESTUDIANTE_CURSO(
+  estudiamte_ID integer not null,
+  curso_ID integer not null,
+  Fecha_inscripcion integer not null,
+  PRIMARY KEY (estudiamte_ID,curso_ID),
+  FOREIGN KEY (estudiamte_ID ) references ESTUDIANTE(estudiamte_ID ),
+  FOREIGN KEY (curso_ID) references CURSO(curso_ID)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+);
+SELECT*from ESTUDIANTE_CURSO;
+drop table curso; 
+--5)contar cuantos clientes y femeninos hay 
+SELECT c.clisexo, count(*) as total 
+from cliente c
+where c.clisexo='M'
+GROUP BY c.clisexo;
+--6)mostrar cliente con mas limite de credito \
+SELECT c.clinombre, c.clilimitec
+from cliente c
+where c.clilimitec = ( SELECT max(clilimitec)
+from cliente);
+--7) producto mas barto
+SELECT p.prodescripcion, p.proprecio
+FROM producto p
+WHERE proprecio = (
+  SELECT MIN(proprecio)
+  FROM producto
+);
 
